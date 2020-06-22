@@ -41,16 +41,19 @@
     window.addEventListener('keydown', (event) => {
       console.log(event.key);
       // playerの位置を更新
-      if (event.key === 'ArrowRight') playerX++;
-      if (event.key === 'ArrowLeft') playerX--;
-      if (event.key === 'ArrowUp') playerY++;
-      if (event.key === 'ArrowDown') playerY--;
+      let dx = 0, dy = 0;
+      if (event.key === 'ArrowRight') dx = 1;
+      if (event.key === 'ArrowLeft') dx = -1;
+      if (event.key === 'ArrowUp') dy = 1;
+      if (event.key === 'ArrowDown') dy = -1;
+      playerX = clamp(0, playerX + dx, W - 1);
+      playerY = clamp(0, playerY + dy, H - 1);
     });
   }
 
   // 描画処理
   function render() {
-    context.fillStyle = 'black';
+    context.fillStyle = '#0f0f0f';
     context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     for (let i = 0; i < H; i++) for (let j = 0; j < W; j++) {
@@ -75,6 +78,10 @@
       }
     }
     requestAnimationFrame(render);
+  }
+
+  function clamp(l, x, r) {
+    return Math.max(l, Math.min(x, r));
   }
 
 })();
