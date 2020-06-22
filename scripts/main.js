@@ -39,7 +39,6 @@
 
   function eventSetting() {
     window.addEventListener('keydown', (event) => {
-      console.log(event.key);
       // playerの位置を更新
       let dx = 0, dy = 0;
       if (event.key === 'ArrowRight') dx = 1;
@@ -70,11 +69,28 @@
       context.closePath();
 
       context.strokeStyle = 'white';
+      context.lineWidth = 1;
       context.stroke();
 
       if (j === playerX && i === playerY) {
-        context.fillStyle = '#F44E3F';
+        // context.fillStyle = '#F44E3F';
         context.fill();
+
+        // 矢印を描画する
+        const centerX = offsetX + j * GRID_SIZE + GRID_SIZE / 2;
+        const centerY = offsetY - i * GRID_SIZE - GRID_SIZE / 2;
+        context.save();
+        context.translate(centerX, centerY);
+        context.beginPath();
+        context.moveTo(0, GRID_SIZE / 2);
+        context.lineTo(0, -GRID_SIZE / 2 + 5);
+        context.lineTo(-GRID_SIZE / 4, -GRID_SIZE / 6);
+        context.moveTo(0, -GRID_SIZE / 2 + 5);
+        context.lineTo(GRID_SIZE / 4, -GRID_SIZE / 6);
+        context.lineWidth = 2;
+        context.strokeStyle = '#f44e3f';
+        context.stroke();
+        context.restore();
       }
     }
     requestAnimationFrame(render);
