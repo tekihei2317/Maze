@@ -13,6 +13,10 @@
   const offsetX = 50;
   const offsetY = 550;
 
+  // playerの位置
+  let playerX = 0;
+  let playerY = 0;
+
   window.addEventListener('load', () => {
     initialize();
   });
@@ -28,7 +32,20 @@
       maze[i] = [];
       for (let j = 0; j < W; j++) maze[i][j] = 0;
     }
+
+    eventSetting();
     render();
+  }
+
+  function eventSetting() {
+    window.addEventListener('keydown', (event) => {
+      console.log(event.key);
+      // playerの位置を更新
+      if (event.key === 'ArrowRight') playerX++;
+      if (event.key === 'ArrowLeft') playerX--;
+      if (event.key === 'ArrowUp') playerY++;
+      if (event.key === 'ArrowDown') playerY--;
+    });
   }
 
   // 描画処理
@@ -51,6 +68,13 @@
 
       context.strokeStyle = 'white';
       context.stroke();
+
+      if (j === playerX && i === playerY) {
+        context.fillStyle = '#F44E3F';
+        context.fill();
+      }
     }
+    requestAnimationFrame(render);
   }
+
 })();
