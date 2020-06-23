@@ -9,13 +9,16 @@ class Player {
   }
 
   // 移動
-  moveForward(H, W) {
-    this.x = Math.clamp(0, this.x + this.dx[this.direction], W - 1);
-    this.y = Math.clamp(0, this.y + this.dy[this.direction], H - 1);
+  moveForward(maze) {
+    const nx = this.x + this.dx[this.direction];
+    const ny = this.y + this.dy[this.direction];
+    if (maze.isWall[ny][nx] === false) [this.x, this.y] = [nx, ny];
   }
-  moveBackward(H, W) {
-    this.x = Math.clamp(0, this.x - this.dx[this.direction], W - 1);
-    this.y = Math.clamp(0, this.y - this.dy[this.direction], H - 1);
+  moveBackward(maze) {
+    const nx = this.x - this.dx[this.direction];
+    const ny = this.y - this.dy[this.direction];
+    if (maze.isWall[ny][nx] === false) [this.x, this.y] = [nx, ny];
+
   }
 
   // 回転
@@ -47,7 +50,7 @@ class Player {
     context.moveTo(0, -GRID_SIZE / 2 + 5);
     context.lineTo(GRID_SIZE / 4, -GRID_SIZE / 6);
     context.lineWidth = 2;
-    context.strokeStyle = '#f44e3f';
+    context.strokeStyle = '#ffd23f';
     context.stroke();
     context.restore();
   }

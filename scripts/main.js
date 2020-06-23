@@ -44,8 +44,8 @@
       // playerの位置を更新
       if (event.key === 'ArrowRight') player.turnRight();
       if (event.key === 'ArrowLeft') player.turnLeft();
-      if (event.key === 'ArrowUp') player.moveForward(H, W);
-      if (event.key === 'ArrowDown') player.moveBackward(H, W);
+      if (event.key === 'ArrowUp') player.moveForward(maze);
+      if (event.key === 'ArrowDown') player.moveBackward(maze);
     });
   }
 
@@ -72,7 +72,7 @@
         context.fill();
       }
 
-      context.strokeStyle = 'white';
+      context.strokeStyle = '#dddddd';
       context.lineWidth = 1;
       context.stroke();
 
