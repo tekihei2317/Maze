@@ -6,15 +6,15 @@
   const CANVAS_HEIGHT = 600;
 
   // maze
-  const H = 10;
-  const W = 10;
+  const H = 11;
+  const W = 11;
   const GRID_SIZE = 50;
-  let maze = [];
-  const offsetX = 50;
-  const offsetY = 550;
+  let maze = null;
 
   // player
   let player = null;
+  const offsetX = 25;
+  const offsetY = 575;
 
   window.addEventListener('load', () => {
     initialize();
@@ -27,12 +27,9 @@
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
 
-    for (let i = 0; i < H; i++) {
-      maze[i] = [];
-      for (let j = 0; j < W; j++) maze[i][j] = 0;
-    }
+    maze = new Maze(H, W);
 
-    player = new Player(0, 0, 0);
+    player = new Player(1, 1, 0);
     Math.clamp = (l, x, r) => {
       return Math.max(l, Math.min(x, r));
     };
@@ -41,13 +38,14 @@
     render();
   }
 
+  // 
   function eventSetting() {
     window.addEventListener('keydown', (event) => {
       // playerの位置を更新
       if (event.key === 'ArrowRight') player.turnRight();
       if (event.key === 'ArrowLeft') player.turnLeft();
-      if (event.key === 'ArrowUp') player.moveForward();
-      if (event.key === 'ArrowDown') player.moveBackward();
+      if (event.key === 'ArrowUp') player.moveForward(H, W);
+      if (event.key === 'ArrowDown') player.moveBackward(H, W);
     });
   }
 
@@ -69,6 +67,10 @@
       context.lineTo(x3, y3);
       context.lineTo(x4, y4);
       context.closePath();
+      if (maze.isWall[i][j] === true) {
+        context.fillStyle = '#691e06';
+        context.fill();
+      }
 
       context.strokeStyle = 'white';
       context.lineWidth = 1;

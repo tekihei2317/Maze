@@ -9,13 +9,13 @@ class Player {
   }
 
   // 移動
-  moveForward() {
-    this.x = Math.clamp(0, this.x + this.dx[this.direction], 9);
-    this.y = Math.clamp(0, this.y + this.dy[this.direction], 9);
+  moveForward(H, W) {
+    this.x = Math.clamp(0, this.x + this.dx[this.direction], W - 1);
+    this.y = Math.clamp(0, this.y + this.dy[this.direction], H - 1);
   }
-  moveBackward() {
-    this.x = Math.clamp(0, this.x - this.dx[this.direction], 9);
-    this.y = Math.clamp(0, this.y - this.dy[this.direction], 9);
+  moveBackward(H, W) {
+    this.x = Math.clamp(0, this.x - this.dx[this.direction], W - 1);
+    this.y = Math.clamp(0, this.y - this.dy[this.direction], H - 1);
   }
 
   // 回転
@@ -31,8 +31,8 @@ class Player {
    * @param {CanvasRenderingContext2D} context - 描画用のコンテキスト
    */
   draw(context) {
-    const offsetX = 50;
-    const offsetY = 550;
+    const offsetX = 25;
+    const offsetY = 575;
     const GRID_SIZE = 50;
     const centerX = offsetX + this.x * GRID_SIZE + GRID_SIZE / 2;
     const centerY = offsetY - this.y * GRID_SIZE - GRID_SIZE / 2;
@@ -50,5 +50,53 @@ class Player {
     context.strokeStyle = '#f44e3f';
     context.stroke();
     context.restore();
+  }
+}
+
+// 迷路を扱うクラス
+class Maze {
+  /**
+   * @constructor
+   * @param {number} H - 迷路の縦の長さ
+   * @param {number} W - 迷路の横の長さ
+   */
+  constructor(H, W) {
+    this.H = H;
+    this.W = W;
+    this.isWall = [];
+
+    // 壁を生成(棒倒し法)
+    for (let i = 0; i < H; i++) {
+      this.isWall[i] = [];
+      for (let j = 0; j < W; j++) {
+        this.isWall[i][j] = (i === 0 || i === H - 1 || j === 0 || j === W - 1);
+      }
+    }
+
+    for (let i = 2; i < H - 2; i += 2) {
+      for (let j = 2; j < W - 2; j += 2) this.isWall[i][j] = true;
+    }
+
+    for (let i = 2; i < H - 2; i += 2) {
+      for (let j = 2; j < W - 2; j += 2) {
+        const r = this.random(i == 2 ? 4 : 3);
+
+        let [y, x] = [i, j];
+        if (r === 0) x++;
+        if (r === 1) y++;
+        if (r === 2) x--;
+        if (r === 3) y--;
+        console.log(r);
+        this.isWall[y][x] = true;
+      }
+    }
+  }
+
+  /**
+   * 0からnum-1までの整数をランダムに返す
+   * @param {number} num
+   */
+  random(num) {
+    return Math.floor(Math.random() * num);
   }
 }
