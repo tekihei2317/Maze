@@ -17,8 +17,10 @@
   let playerX = 0;
   let playerY = 0;
 
-  // playerの向き
-  let rotateY = 0;
+  // playerの向き(1増えるごとに時計周りにPI/2増える)
+  let direction = 0;
+  const dy = [1, 0, -1, 0];
+  const dx = [0, -1, 0, 1];
 
   window.addEventListener('load', () => {
     initialize();
@@ -43,21 +45,16 @@
   function eventSetting() {
     window.addEventListener('keydown', (event) => {
       // playerの位置を更新
-      let dx = 0, dy = 0;
-      if (event.key === 'ArrowRight') rotateY -= Math.PI / 2, console.log(rotateY);
-      if (event.key === 'ArrowLeft') rotateY += Math.PI / 2, console.log(rotateY);
+      if (event.key === 'ArrowRight') direction = (direction + 3) % 4;
+      if (event.key === 'ArrowLeft') direction = (direction + 1) % 4;
       if (event.key === 'ArrowUp') {
-        dx = Math.cos(rotateY + Math.PI / 2);
-        dy = Math.sin(rotateY + Math.PI / 2);
-        console.log(dx, dy);
+        playerX = clamp(0, playerX + dx[direction], W - 1);
+        playerY = clamp(0, playerY + dy[direction], H - 1);
       }
       if (event.key === 'ArrowDown') {
-        dx = -Math.cos(rotateY + Math.PI / 2);
-        dy = -Math.sin(rotateY + Math.PI / 2);
-        console.log(dx, dy);
+        playerX = clamp(0, playerX - dx[direction], W - 1);
+        playerY = clamp(0, playerY - dy[direction], H - 1);
       }
-      playerX = clamp(0, playerX + dx, W - 1);
-      playerY = clamp(0, playerY + dy, H - 1);
     });
   }
 
@@ -92,7 +89,7 @@
         const centerY = offsetY - i * GRID_SIZE - GRID_SIZE / 2;
         context.save();
         context.translate(centerX, centerY);
-        context.rotate(-rotateY);
+        context.rotate(-direction * Math.PI / 2);
         context.beginPath();
         context.moveTo(0, GRID_SIZE / 2);
         context.lineTo(0, -GRID_SIZE / 2 + 5);
