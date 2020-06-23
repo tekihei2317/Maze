@@ -17,6 +17,9 @@
   let playerX = 0;
   let playerY = 0;
 
+  // playerの向き
+  let rotateY = 0;
+
   window.addEventListener('load', () => {
     initialize();
   });
@@ -41,8 +44,8 @@
     window.addEventListener('keydown', (event) => {
       // playerの位置を更新
       let dx = 0, dy = 0;
-      if (event.key === 'ArrowRight') dx = 1;
-      if (event.key === 'ArrowLeft') dx = -1;
+      if (event.key === 'ArrowRight') rotateY -= Math.PI / 2, console.log(rotateY);
+      if (event.key === 'ArrowLeft') rotateY += Math.PI / 2, console.log(rotateY);
       if (event.key === 'ArrowUp') dy = 1;
       if (event.key === 'ArrowDown') dy = -1;
       playerX = clamp(0, playerX + dx, W - 1);
@@ -81,6 +84,7 @@
         const centerY = offsetY - i * GRID_SIZE - GRID_SIZE / 2;
         context.save();
         context.translate(centerX, centerY);
+        context.rotate(-rotateY);
         context.beginPath();
         context.moveTo(0, GRID_SIZE / 2);
         context.lineTo(0, -GRID_SIZE / 2 + 5);
