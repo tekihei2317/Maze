@@ -13,15 +13,6 @@
   const offsetX = 50;
   const offsetY = 550;
 
-  // playerの位置
-  let playerX = 0;
-  let playerY = 0;
-
-  // playerの向き(1増えるごとに時計周りにPI/2増える)
-  let direction = 0;
-  const dy = [1, 0, -1, 0];
-  const dx = [0, -1, 0, 1];
-
   // player
   let player = null;
 
@@ -42,6 +33,9 @@
     }
 
     player = new Player(0, 0, 0);
+    Math.clamp = (l, x, r) => {
+      return Math.max(l, Math.min(x, r));
+    };
 
     eventSetting();
     render();
@@ -50,16 +44,10 @@
   function eventSetting() {
     window.addEventListener('keydown', (event) => {
       // playerの位置を更新
-      if (event.key === 'ArrowRight') player.direction = (player.direction + 3) % 4;
-      if (event.key === 'ArrowLeft') player.direction = (player.direction + 1) % 4;
-      if (event.key === 'ArrowUp') {
-        player.x = clamp(0, player.x + dx[player.direction], W - 1);
-        player.y = clamp(0, player.y + dy[player.direction], H - 1);
-      }
-      if (event.key === 'ArrowDown') {
-        player.x = clamp(0, player.x - dx[player.direction], W - 1);
-        player.y = clamp(0, player.y - dy[player.direction], H - 1);
-      }
+      if (event.key === 'ArrowRight') player.turnRight();
+      if (event.key === 'ArrowLeft') player.turnLeft();
+      if (event.key === 'ArrowUp') player.moveForward();
+      if (event.key === 'ArrowDown') player.moveBackward();
     });
   }
 
@@ -69,6 +57,7 @@
     context.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     for (let i = 0; i < H; i++) for (let j = 0; j < W; j++) {
+      // グリッドを描画
       const [x1, y1] = [offsetX + (j + 0) * GRID_SIZE, offsetY - (i + 0) * GRID_SIZE];
       const [x2, y2] = [offsetX + (j + 1) * GRID_SIZE, offsetY - (i + 0) * GRID_SIZE];
       const [x3, y3] = [offsetX + (j + 1) * GRID_SIZE, offsetY - (i + 1) * GRID_SIZE];
@@ -85,27 +74,8 @@
       context.lineWidth = 1;
       context.stroke();
 
-      if (j === player.x && i === player.y) {
-        // context.fillStyle = '#F44E3F';
-        context.fill();
-
-        // 矢印を描画する
-        const centerX = offsetX + j * GRID_SIZE + GRID_SIZE / 2;
-        const centerY = offsetY - i * GRID_SIZE - GRID_SIZE / 2;
-        context.save();
-        context.translate(centerX, centerY);
-        context.rotate(-player.direction * Math.PI / 2);
-        context.beginPath();
-        context.moveTo(0, GRID_SIZE / 2);
-        context.lineTo(0, -GRID_SIZE / 2 + 5);
-        context.lineTo(-GRID_SIZE / 4, -GRID_SIZE / 6);
-        context.moveTo(0, -GRID_SIZE / 2 + 5);
-        context.lineTo(GRID_SIZE / 4, -GRID_SIZE / 6);
-        context.lineWidth = 2;
-        context.strokeStyle = '#f44e3f';
-        context.stroke();
-        context.restore();
-      }
+      // 矢印を描画
+      player.draw(context);
     }
     requestAnimationFrame(render);
   }
