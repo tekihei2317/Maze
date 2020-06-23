@@ -22,6 +22,9 @@
   const dy = [1, 0, -1, 0];
   const dx = [0, -1, 0, 1];
 
+  // player
+  let player = null;
+
   window.addEventListener('load', () => {
     initialize();
   });
@@ -38,6 +41,8 @@
       for (let j = 0; j < W; j++) maze[i][j] = 0;
     }
 
+    player = new Player(0, 0, 0);
+
     eventSetting();
     render();
   }
@@ -45,15 +50,15 @@
   function eventSetting() {
     window.addEventListener('keydown', (event) => {
       // playerの位置を更新
-      if (event.key === 'ArrowRight') direction = (direction + 3) % 4;
-      if (event.key === 'ArrowLeft') direction = (direction + 1) % 4;
+      if (event.key === 'ArrowRight') player.direction = (player.direction + 3) % 4;
+      if (event.key === 'ArrowLeft') player.direction = (player.direction + 1) % 4;
       if (event.key === 'ArrowUp') {
-        playerX = clamp(0, playerX + dx[direction], W - 1);
-        playerY = clamp(0, playerY + dy[direction], H - 1);
+        player.x = clamp(0, player.x + dx[player.direction], W - 1);
+        player.y = clamp(0, player.y + dy[player.direction], H - 1);
       }
       if (event.key === 'ArrowDown') {
-        playerX = clamp(0, playerX - dx[direction], W - 1);
-        playerY = clamp(0, playerY - dy[direction], H - 1);
+        player.x = clamp(0, player.x - dx[player.direction], W - 1);
+        player.y = clamp(0, player.y - dy[player.direction], H - 1);
       }
     });
   }
@@ -80,7 +85,7 @@
       context.lineWidth = 1;
       context.stroke();
 
-      if (j === playerX && i === playerY) {
+      if (j === player.x && i === player.y) {
         // context.fillStyle = '#F44E3F';
         context.fill();
 
@@ -89,7 +94,7 @@
         const centerY = offsetY - i * GRID_SIZE - GRID_SIZE / 2;
         context.save();
         context.translate(centerX, centerY);
-        context.rotate(-direction * Math.PI / 2);
+        context.rotate(-player.direction * Math.PI / 2);
         context.beginPath();
         context.moveTo(0, GRID_SIZE / 2);
         context.lineTo(0, -GRID_SIZE / 2 + 5);
