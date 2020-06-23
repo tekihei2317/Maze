@@ -46,8 +46,16 @@
       let dx = 0, dy = 0;
       if (event.key === 'ArrowRight') rotateY -= Math.PI / 2, console.log(rotateY);
       if (event.key === 'ArrowLeft') rotateY += Math.PI / 2, console.log(rotateY);
-      if (event.key === 'ArrowUp') dy = 1;
-      if (event.key === 'ArrowDown') dy = -1;
+      if (event.key === 'ArrowUp') {
+        dx = Math.cos(rotateY + Math.PI / 2);
+        dy = Math.sin(rotateY + Math.PI / 2);
+        console.log(dx, dy);
+      }
+      if (event.key === 'ArrowDown') {
+        dx = -Math.cos(rotateY + Math.PI / 2);
+        dy = -Math.sin(rotateY + Math.PI / 2);
+        console.log(dx, dy);
+      }
       playerX = clamp(0, playerX + dx, W - 1);
       playerY = clamp(0, playerY + dy, H - 1);
     });
